@@ -8,6 +8,10 @@ p {
   margin: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 p:last-child {
   margin-bottom: 0;
 }
@@ -31,4 +35,9 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+body {
+  margin: 0;
+  background-color: #e7e5e5;
 }
