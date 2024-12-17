@@ -25,55 +25,54 @@ async function submitForm(event) {
   value = input.value;
 
   loadMoreBtn.style.display = 'none';
-
   loading.style.display = 'inline-block';
-
   list.innerHTML = '';
 
+  // Перевірка на порожній запит
   if (event.currentTarget.elements.search.value.trim() === '') {
     loading.style.display = 'none';
     clearGallery();
     return;
   }
 
-  await fetchImages(value, page)
-    .then(data => {
-      if (data.total === 0) {
-        loading.style.display = 'none';
-        clearGallery();
-        return;
-      }
+  try {
+    const data = await fetchImages(value, page);
 
+    if (data.total === 0) {
       loading.style.display = 'none';
+      clearGallery();
+      return;
+    }
 
-      list.insertAdjacentHTML('beforeend', renderImages(data.hits));
+    loading.style.display = 'none';
 
-      initSimpleLightbox();
+    list.insertAdjacentHTML('beforeend', renderImages(data.hits));
 
-      const total = data.totalHits;
-      const totalPages = Math.ceil(total / 15);
+    initSimpleLightbox();
 
-      if (page >= totalPages) {
-        iziToast.info({
-          position: 'topRight',
-          message:
-            "We're sorry, but there are no more images for your request.",
-        });
-        loadMoreBtn.style.display = 'none';
-        return;
-      }
+    const total = data.totalHits;
+    const totalPages = Math.ceil(total / 15);
 
-      page++;
-      loadMoreBtn.style.display = 'block';
-    })
-    .catch(error => {
-      loading.style.display = 'none';
-      iziToast.error({
+    if (page >= totalPages) {
+      iziToast.info({
         position: 'topRight',
-        message: error.message,
-        maxWidth: 432,
+        message:
+          "We're sorry, but there are no more images for your request.",
       });
+      loadMoreBtn.style.display = 'none';
+      return;
+    }
+
+    page++;
+    loadMoreBtn.style.display = 'block';
+  } catch (error) {
+    loading.style.display = 'none';
+    iziToast.error({
+      position: 'topRight',
+      message: error.message,
+      maxWidth: 432,
     });
+  }
 }
 
 function clearGallery() {
@@ -102,37 +101,37 @@ async function loadMorePictures(event) {
   loadMoreBtn.style.display = 'none';
   loading.style.display = 'inline-block';
 
-  await fetchNextPage(value, page)
-    .then(data => {
-      loading.style.display = 'none';
-      list.insertAdjacentHTML('beforeend', renderImages(data.hits));
-      scrollBy();
+  try {
+    const data = await fetchNextPage(value, page);
 
-      initSimpleLightbox();
+    loading.style.display = 'none';
+    list.insertAdjacentHTML('beforeend', renderImages(data.hits));
+    scrollBy();
 
-      const total = data.totalHits;
-      const totalPages = Math.ceil(total / 15);
+    initSimpleLightbox();
 
-      if (page >= totalPages) {
-        iziToast.info({
-          position: 'topRight',
-          message: "We're sorry, but you've reached the end of search results.",
-        });
-        loadMoreBtn.style.display = 'none';
-        return;
-      }
+    const total = data.totalHits;
+    const totalPages = Math.ceil(total / 15);
 
-      page++;
-      loadMoreBtn.style.display = 'block';
-    })
-    .catch(error => {
-      loading.style.display = 'none';
-      iziToast.error({
+    if (page >= totalPages) {
+      iziToast.info({
         position: 'topRight',
-        message: error.message,
-        maxWidth: 432,
+        message: "We're sorry, but you've reached the end of search results.",
       });
+      loadMoreBtn.style.display = 'none';
+      return;
+    }
+
+    page++;
+    loadMoreBtn.style.display = 'block';
+  } catch (error) {
+    loading.style.display = 'none';
+    iziToast.error({
+      position: 'topRight',
+      message: error.message,
+      maxWidth: 432,
     });
+  }
 }
 
 function scrollBy() {
