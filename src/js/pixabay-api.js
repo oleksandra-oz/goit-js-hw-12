@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_KEY = '47411566-1fe68ca00fdccc973e940a4de';
 
-
+// Refactored fetchImages function using async/await
 export async function fetchImages(value, page) {
   try {
     const params = new URLSearchParams({
@@ -15,14 +15,14 @@ export async function fetchImages(value, page) {
     });
 
     const response = await axios.get(`https://pixabay.com/api/?${params}`);
-    return response.data; 
+    return response.data;
   } catch (error) {
-    console.error('Error fetching images:', error); 
-    throw error; 
+    console.error('Error fetching images:', error);
+    throw error;
   }
 }
 
-
+// Refactored fetchNextPage function using async/await
 export async function fetchNextPage(value, page) {
   try {
     const params = new URLSearchParams({
@@ -36,8 +36,9 @@ export async function fetchNextPage(value, page) {
     });
 
     const response = await axios.get(`https://pixabay.com/api/?${params}`);
-    return response.data; 
-    console.error('Error fetching next page:', error); 
-    throw error; 
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching next page:', error);
+    throw error;
   }
 }
